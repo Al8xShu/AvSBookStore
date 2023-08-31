@@ -4,13 +4,13 @@ namespace AvSBookStore
 {
     public class Book
     {
-        public string Title { get; }
         public int Id { get; }
+        public string Title { get; }
 
-        public Book(string title, int id)
+        public Book(int id, string title)
         {
-            Title = title;
             Id = id;
+            Title = title;
         }
     }
 }
