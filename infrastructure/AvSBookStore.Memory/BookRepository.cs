@@ -10,12 +10,12 @@ namespace AvSBookStore.Memory
     {
         private readonly Book[] books = new[]
         {
-            new Book(1, "Art of flight"),
+            new Book(1, "Art of program"),
             new Book(2, "Refactoring"),
             new Book(3, "C++ program language"),
         };
 
-        public Book[] getByTitle(string titlePart)
+        public Book[] getAllByTitle(string titlePart)
         {
             return books.Where(book => book.Title.Contains(titlePart)).ToArray();
         }
