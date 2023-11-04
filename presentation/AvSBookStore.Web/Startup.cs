@@ -24,7 +24,8 @@ namespace AvSBookStore.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddSingleton<IBookRepository, AvSBookStore.Memory.BookRepository>(); 
+            services.AddSingleton<IBookRepository, AvSBookStore.Memory.BookRepository>();
+            services.AddSingleton<BookService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

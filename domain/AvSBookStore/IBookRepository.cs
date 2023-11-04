@@ -6,6 +6,8 @@ namespace AvSBookStore
 {
     public interface IBookRepository
     {
-        Book[] getAllByTitle(string titlePart);
+        Book[] getAllByTitleOrAuthor(string titleOrAuthor);
+
+        Book[] getAllByIsbn(string isbn);
     }
 }
