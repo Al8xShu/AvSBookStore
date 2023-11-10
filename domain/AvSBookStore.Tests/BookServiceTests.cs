@@ -17,10 +17,10 @@ namespace AvSBookStore.Tests
             Moq.Mock<IBookRepository> bookRepositoryStub = new Mock<IBookRepository>();
 
             bookRepositoryStub.Setup(x => x.getAllByIsbn(It.IsAny<string>()))
-                .Returns(new[] { new Book(1, "", "", "") });
+                .Returns(new[] { new Book(1, "", "", "", "", 0.0m) });
 
             bookRepositoryStub.Setup(x => x.getAllByTitleOrAuthor(It.IsAny<string>()))
-                .Returns(new[] { new Book(2, "", "", "") });
+                .Returns(new[] { new Book(2, "", "", "", "", 0.0m) });
 
             BookService bookService = new BookService(bookRepositoryStub.Object);
 
@@ -38,10 +38,10 @@ namespace AvSBookStore.Tests
             Moq.Mock<IBookRepository> bookRepositoryStub = new Mock<IBookRepository>();
 
             bookRepositoryStub.Setup(x => x.getAllByIsbn(It.IsAny<string>()))
-                .Returns(new[] { new Book(1, "", "", "") });
+                .Returns(new[] { new Book(1, "", "", "", "", 0.0m) });
 
             bookRepositoryStub.Setup(x => x.getAllByTitleOrAuthor(It.IsAny<string>()))
-                .Returns(new[] { new Book(2, "", "", "") });
+                .Returns(new[] { new Book(2, "", "", "", "", 0.0m) });
 
             BookService bookService = new BookService(bookRepositoryStub.Object);
 

@@ -9,5 +9,7 @@ namespace AvSBookStore
         Book[] getAllByTitleOrAuthor(string titleOrAuthor);
 
         Book[] getAllByIsbn(string isbn);
+
+        Book getById(int id);
     }
 }
