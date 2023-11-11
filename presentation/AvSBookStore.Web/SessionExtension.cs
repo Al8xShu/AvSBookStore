@@ -13,18 +13,13 @@ namespace AvSBookStore.Web
         {
             if (value == null)
                 return;
+
             using (MemoryStream stream = new MemoryStream())
             using (BinaryWriter writer = new BinaryWriter(stream, Encoding.UTF8, true))
             {
-                writer.Write(value.Items.Count);
-
-                foreach (var item in value.Items)
-                {
-                    writer.Write(item.Key);
-                    writer.Write(item.Value);
-                }
-
-                writer.Write(value.Amount);
+                writer.Write(value.OrderId);
+                writer.Write(value.TotalCount);
+                writer.Write(value.TotalPrice);
 
                 session.Set(key, stream.ToArray());
             }
@@ -38,18 +33,16 @@ namespace AvSBookStore.Web
                 using (MemoryStream stream = new MemoryStream(buffer))
                 using (BinaryReader reader = new BinaryReader(stream, Encoding.UTF8, true))
                 {
-                    value = new Cart();
 
-                    var lenght = reader.ReadInt32();
-                    for (int i = 0; i < lenght; i++)
+                    var orderId = reader.ReadInt32();
+                    var totalCount = reader.ReadInt32();
+                    var totalPrice = reader.ReadDecimal();
+
+                    value = new Cart(orderId)
                     {
-                        var bookId = reader.ReadInt32();
-                        var count = reader.ReadInt32();
-
-                        value.Items.Add(bookId, count);
-                    }
-
-                    value.Amount = reader.ReadDecimal();
+                        TotalCount = totalCount,
+                        TotalPrice = totalPrice,
+                    };
 
                     return true;
                 }
