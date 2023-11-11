@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace AvSBookStore.Memory
@@ -26,9 +26,17 @@ namespace AvSBookStore.Memory
             return books.Where(book => book.Isbn == isbn).ToArray();
         }
 
-        public Book getById(int id)
+        public Book GetById(int id)
         {
             return books.Single(book => book.Id == id);
+        }
+
+        public Book[] GetAllByIds(IEnumerable<int> bookIds)
+        {
+            var foundBooks = from book in books
+                             join bookId in bookIds on book.Id equals bookId
+                             select book;
+            return foundBooks.ToArray();
         }
     }
 }

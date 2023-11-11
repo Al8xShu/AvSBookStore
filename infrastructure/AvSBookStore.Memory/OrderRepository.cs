@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace AvSBookStore.Memory
@@ -18,7 +17,7 @@ namespace AvSBookStore.Memory
             return order;
         }
 
-        public Order GteById(int id)
+        public Order GetById(int id)
         {
             return orders.Single(order => order.Id == id);
         }
