@@ -8,7 +8,7 @@ namespace AvSBookStore
     {
         Order Create();
 
-        Order GteById(int id);
+        Order GetById(int id);
 
         void Update(Order order);
     }

@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AvSBookStore.Web.Controllers
 {
@@ -17,7 +13,7 @@ namespace AvSBookStore.Web.Controllers
 
         public IActionResult Index(int id)
         {
-            Book book = bookRepository.getById(id);
+            Book book = bookRepository.GetById(id);
 
             return View(book);
         }

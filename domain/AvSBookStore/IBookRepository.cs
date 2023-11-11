@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace AvSBookStore
 {
@@ -10,6 +8,8 @@ namespace AvSBookStore
 
         Book[] getAllByIsbn(string isbn);
 
-        Book getById(int id);
+        Book GetById(int id);
+
+        Book[] GetAllByIds(IEnumerable<int> bookIds);
     }
 }
