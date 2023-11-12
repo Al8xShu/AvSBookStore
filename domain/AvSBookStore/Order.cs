@@ -1,106 +1,98 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AvSBookStore.Data;
 
 namespace AvSBookStore
 {
     public class Order
     {
-        public int Id { get; }
-        private List<OrderItem> items;
+        private readonly OrderDto dto;
+        public int Id => dto.Id;
 
-        public Order(int id, IEnumerable<OrderItem> items)
+        public string CellPhone
         {
-            if (items == null)
+            get => dto.CellPhone;
+            set
             {
-                throw new ArgumentNullException(nameof(items));
-            }
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException(nameof(CellPhone));
 
-            Id = id;
-            this.items = new List<OrderItem>(items);
-        }
-
-        public IReadOnlyCollection<OrderItem> Items
-        {
-            get { return items; }
-        }
-
-        public int TotalCount => items.Sum(item => item.Count);
-
-        public decimal TotalPrice => items.Sum(item => item.Price * item.Count);
-
-        public OrderItem GetItem(int bookId)
-        {
-            int index = items.FindIndex(item => item.BookId == bookId);
-
-            if (index == -1)
-            {
-                ThrowBookException("Book not found.", bookId);
-            }
-
-            return items[index];
-        }
-
-        public void AddItem(Book book, int count)
-        {
-            if (book == null)
-            {
-                throw new ArgumentNullException(nameof(book));
-            }
-
-            var item = items.SingleOrDefault(x => x.BookId == book.Id);
-
-            if (item == null)
-            {
-                items.Add(new OrderItem(book.Id, count, book.Price));
-            }
-            else
-            {
-                items.Remove(item);
-                items.Add(new OrderItem(book.Id, item.Count + count, book.Price));
+                dto.CellPhone = value;
             }
         }
 
-        public void RemoveItems(int bookId)
+        public OrderDelivery Delivery
         {
-
-            int index = items.FindIndex(item => item.BookId == bookId);
-
-            if (index == -1)
+            get
             {
+                if (dto.DeliveryUniqueCode == null)
+                    return null;
 
-                ThrowBookException("Order does not contain specified book", bookId);
+                return new OrderDelivery(
+                    dto.DeliveryUniqueCode,
+                    dto.DeliveryDescription,
+                    dto.DeliveryPrice,
+                    dto.DeliveryParameters);
             }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentException(nameof(Delivery));
 
-            items.RemoveAt(index);
+                dto.DeliveryUniqueCode = value.UniqueCode;
+                dto.DeliveryDescription = value.Description;
+                dto.DeliveryPrice = value.Price;
+                dto.DeliveryParameters = value.Parameters
+                                              .ToDictionary(p => p.Key, p => p.Value);
+            }
         }
 
-        private void ThrowBookException(string message, int bookId)
+        public OrderPayment Payment
         {
-            var exception = new InvalidOperationException(message);
+            get
+            {
+                if (dto.PaymentServiceName == null)
+                    return null;
 
-            exception.Data[nameof(bookId)] = bookId;
+                return new OrderPayment(
+                    dto.PaymentServiceName,
+                    dto.PaymentDescription,
+                    dto.PaymentParameters);
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentException(nameof(Payment));
 
-            throw exception;
+                dto.PaymentServiceName = value.UniqueCode;
+                dto.PaymentDescription = value.Description;
+                dto.PaymentParameters = value.Parameters
+                                             .ToDictionary(p => p.Key, p => p.Value);
+            }
         }
 
-        public void AddOrUpdateItem(Book book, int count)
+        public OrderItemCollection Items { get; }
+        public int TotalCount => Items.Sum(item => item.Count);
+        public decimal TotalPrice => Items.Sum(item => item.Price * item.Count)
+                                   + (Delivery?.Price ?? 0m);
+
+        public Order(OrderDto dto)
         {
-            if (book == null)
-            {
-                throw new ArgumentNullException(nameof(book));
-            }
+            this.dto = dto;
+            Items = new OrderItemCollection(dto);
+        }
 
-            var index = items.FindIndex(item => item.BookId == book.Id);
+        public static class DtoFactory
+        {
+            public static OrderDto Create() => new OrderDto();
+        }
 
-            if (index == -1)
-            {
-                items.Add(new OrderItem(book.Id, count, book.Price));
-            }
-            else
-            {
-                items[index].Count += count;
-            }
+        public static class Mapper
+        {
+            public static Order Map(OrderDto dto) => new Order(dto);
+
+            public static OrderDto Map(Order domain) => domain.dto;
         }
     }
 }

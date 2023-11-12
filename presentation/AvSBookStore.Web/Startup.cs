@@ -4,7 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using AvSBookStore.Memory;
+using AvSBookStore.Messages;
+using AvSBookStore.Contractors;
+using AvSBookStore.Web.App;
+using AvSBookStore.Web.Controllers;
+using AvSBookStore.Data.EF;
 
 namespace AvSBookStore.Web
 {
@@ -31,9 +35,11 @@ namespace AvSBookStore.Web
                     options.Cookie.IsEssential = true;
                 });
 
-            services.AddSingleton<IBookRepository, BookRepository>();
+            services.AddEfRepositories(Configuration.GetConnectionString("AvSBookStore"));
 
-            services.AddSingleton<IOrderRepository, OrderRepository>();
+            services.AddSingleton<INotificationService, DebugNotificationService>();
+
+            services.AddSingleton<IDeliveryService, PostmateDeliveryService>();
 
             services.AddSingleton<BookService>();
         }
