@@ -1,51 +1,61 @@
 ﻿using System;
 using Xunit;
+using AvSBookStore.Data;
 
 namespace AvSBookStore.Tests
 {
     public class OrderTests
     {
         [Fact]
-        public void OrderWithNullItemsThrowsArgumentNullException()
+        public void TotalCount_WithEmptyItems_ReturnsZero()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            new Order(1, null));
-        }
+            var order = CreateEmptyTestOrder();
 
-        [Fact]
-        public void TotalCountWithEmptyItemsReturnZero()
-        {
-            Order order = new Order(1, new OrderItem[0]);
             Assert.Equal(0, order.TotalCount);
         }
 
-        [Fact]
-        public void TotalPriceWithEmptyItemsReturnZero()
+        private static Order CreateEmptyTestOrder()
         {
-            Order order = new Order(1, new OrderItem[0]);
+            return new Order(new OrderDto
+            {
+                Id = 1,
+                Items = new OrderItemDto[0]
+            });
+        }
+
+        [Fact]
+        public void TotalPrice_WithEmptyItems_ReturnsZero()
+        {
+            var order = CreateEmptyTestOrder();
+
             Assert.Equal(0m, order.TotalCount);
         }
 
         [Fact]
-        public void TotalCountWithNonEmptyItemsCalculateTotalCount()
+        public void TotalCount_WithNonEmptyItems_CalcualtesTotalCount()
         {
-            Order order = new Order(1, new[]
-            {
-                new OrderItem(1, 3, 10m),
-                new OrderItem(2, 5, 100m),
-            });
+            var order = CreateTestOrder();
 
             Assert.Equal(3 + 5, order.TotalCount);
         }
 
-        [Fact]
-        public void TotalPriceWithNonEmptyItemsCalculateTotalPrice()
+        private static Order CreateTestOrder()
         {
-            Order order = new Order(1, new[]
+            return new Order(new OrderDto
             {
-                new OrderItem(1, 3, 10m),
-                new OrderItem(2, 5, 100m),
+                Id = 1,
+                Items = new[]
+                {
+                    new OrderItemDto { BookId = 1, Price = 10m, Count = 3},
+                    new OrderItemDto { BookId = 2, Price = 100m, Count = 5},
+                }
             });
+        }
+
+        [Fact]
+        public void TotalPrice_WithNonEmptyItems_CalcualtesTotalPrice()
+        {
+            var order = CreateTestOrder();
 
             Assert.Equal(3 * 10m + 5 * 100m, order.TotalPrice);
         }
