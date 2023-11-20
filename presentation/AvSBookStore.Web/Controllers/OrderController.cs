@@ -119,5 +119,26 @@ namespace AvSBookStore.Web.Controllers
 
             return RedirectToAction("Index", "Order", new { id = bookId });
         }
+
+        public IActionResult SendConfirmationCode(int id, string cellPhone)
+        {
+            var order = orderRepository.GetById(id);
+            var model = Map(order);
+
+            if (!IsValidCellPhone(cellPhone))
+            {
+                return View("Index", model);
+            }
+
+            int code = 1111;
+            HttpContext.Session.SetInt32(cellPhone, code);
+
+            return RedirectToAction("Index", "Order", new { id = id });
+        }
+
+        private bool IsValidCellPhone(string cellPhone)
+        {
+            return false;
+        }
     }
 }
