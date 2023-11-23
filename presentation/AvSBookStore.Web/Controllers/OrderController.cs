@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using AvSBookStore.Web.Models;
 using AvSBookStore.Messages;
 using Microsoft.AspNetCore.Http;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using AvSBookStore.Contractors;
 
 namespace AvSBookStore.Web.Controllers
 {
@@ -11,16 +14,20 @@ namespace AvSBookStore.Web.Controllers
         private readonly IBookRepository bookRepository;
         private readonly IOrderRepository orderRepository;
         private readonly INotificationService notificationService;
+        private readonly IEnumerable<IDeliveryService> deliveryServices;
 
         public OrderController(IBookRepository bookRepository, 
             IOrderRepository orderRepository,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IEnumerable<IDeliveryService> deliveryServices)
         {
             this.bookRepository = bookRepository;
             this.orderRepository = orderRepository;
             this.notificationService = notificationService;
+            this.deliveryServices = deliveryServices;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             if (HttpContext.Session.TryGetCart(out Cart cart))
@@ -58,6 +65,7 @@ namespace AvSBookStore.Web.Controllers
             };
         }
 
+        [HttpPost]
         public IActionResult AddItem(int bookId, int count = 1)
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
@@ -111,6 +119,7 @@ namespace AvSBookStore.Web.Controllers
             return (order, cart);
         }
 
+        [HttpPost]
         public IActionResult RemoveItem(int bookId)
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
@@ -122,6 +131,7 @@ namespace AvSBookStore.Web.Controllers
             return RedirectToAction("Index", "Order", new { id = bookId });
         }
 
+        [HttpPost]
         public IActionResult SendConfirmationCode(int id, string cellPhone)
         {
             var order = orderRepository.GetById(id);
@@ -137,12 +147,79 @@ namespace AvSBookStore.Web.Controllers
             HttpContext.Session.SetInt32(cellPhone, code);
             notificationService.SendConfirmationCode(cellPhone, code);
 
-            return RedirectToAction("Confirmation", new ConfirmationModel { CellPhone = cellPhone });
+            return View("Confirmation", new ConfirmationModel
+            {
+                CellPhone = cellPhone,
+                OrderId = id
+            });
         }
 
         private bool IsValidCellPhone(string cellPhone)
         {
-            return false;
+            if (cellPhone == null)
+            {
+                return false;
+            }
+
+            cellPhone = cellPhone.Replace(" ", "").Replace("-", "");
+
+            return Regex.IsMatch(cellPhone, @"^\+?\d{11}$");
+        }
+
+        [HttpPost]
+        public IActionResult StartDelivery(int id, string cellPhone, int code)
+        {
+            int? storedCode = HttpContext.Session.GetInt32(cellPhone);
+
+            if (storedCode == null)
+            {
+                return View("Confirmation",
+                    new ConfirmationModel
+                    {
+                        CellPhone = cellPhone,
+                        OrderId = id,
+                        Errors = new Dictionary<string, string>
+                    {
+                        {
+                            "code", "Code can't be empty!"
+                        }
+                    }
+                    });
+            }
+
+            if (storedCode != code)
+            {
+                return View("Confirmation",
+                    new ConfirmationModel
+                    {
+                        CellPhone = cellPhone,
+                        OrderId = id,
+                        Errors = new Dictionary<string, string>
+                    {
+                        {
+                            "code", "Code isn't correct!"
+                        }
+                    }
+                    });
+            }
+
+            HttpContext.Session.Remove(cellPhone);
+
+            DeliveryModel model = new DeliveryModel()
+            {
+                OrderId = id,
+                Methods = deliveryServices.ToDictionary(service => service.UniqCode,
+                service => service.Title)
+            };
+
+            return View("DeliveryMethod", model);
+        }
+
+        [HttpPost]
+        public IActionResult NextDelivery()
+        {
+
+            return View();
         }
     }
 }

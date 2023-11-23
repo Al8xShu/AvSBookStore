@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using AvSBookStore.Memory;
+using AvSBookStore.Messages;
 
 namespace AvSBookStore.Web
 {
@@ -34,6 +35,8 @@ namespace AvSBookStore.Web
             services.AddSingleton<IBookRepository, BookRepository>();
 
             services.AddSingleton<IOrderRepository, OrderRepository>();
+
+            services.AddSingleton<INotificationService, DebugNotificationService>();
 
             services.AddSingleton<BookService>();
         }
