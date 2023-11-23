@@ -7,12 +7,19 @@ namespace AvSBookStore.Memory
     {
         private readonly Book[] books = new[]
         {
-            new Book(1, "Art of program", "ISBN 12312-31231", "D. Knut",
-                "This book about Knut", 7.45m),
+            new Book(1, "Art Of Programming, Vol. 1", "ISBN 12312-31231", "D. Knut",
+                "This volume begins with basic programming concepts and techniques, " +
+                "then focuses more particularly on information structures-the representation" +
+                " of information inside a computer, the structural relationships between data" +
+                " elements and how to deal with them efficiently.", 7.45m),
             new Book(2, "Refactoring", "ISBN 12312-31232", "M. Flowler",
-                "This book about Flower", 12.25m),
-            new Book(3, "C++ program language", "ISBN 12312-31233", "B. Kernighan",
-                "This book about Kerighan", 17.15m),
+                "As the application of object technology--particularly the Java programming " +
+                "language--has become commonplace, a new problem has emerged to confront the " +
+                "software development community.", 12.25m),
+            new Book(3, "C++ programm language", "ISBN 12312-31233", "B. Kernighan",
+                "Known as the bible of C, this classic bestseller introduces the C programming" +
+                " language and illustrates algorithms, data structures, and programming " +
+                "techniques.", 17.15m),
         };
 
         public Book[] getAllByTitleOrAuthor(string query)

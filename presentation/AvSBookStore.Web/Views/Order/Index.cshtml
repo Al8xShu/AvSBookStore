@@ -45,14 +45,14 @@
 </table>
 
 <p>
-    Для оформления заказа необходимо подтвердить номер вашего мобильного.
-    Введите номер и нажмите <em>Отправить код</em>. На ваш номер будет отправлен *код подтверждения*.
+    To place an order you must provide your number.
+    Insert you're number and press button <em>Send code</em>. On you're number will send confirmation code.
 </p>
 
 <form action="@Url.Action(nameof(OrderController.SendConfirmationCode))" method="post">
-    <input type="hidden" name="id" value="@Model.Id"/>
+    <input type="hidden" name="id" value="@Model.Id" />
     <div class="form-group">
-        <label for="cellPhone">Мобильный телефон</label>
+        <label for="cellPhone">Mobile phone</label>
         <input type="text" class="form-control" name="cellPhone" placeholder="+79876543210" value="+79876543210" />
         @if (Model.Errors.ContainsKey("cellPhone"))
         {
