@@ -1,0 +1,25 @@
+﻿@model ConfirmationModel
+
+@{           
+    ViewData["Title"] = "Mobile phone confirmation";
+}
+
+<h1>Mobile phone confirmation</h1>
+
+<form action="@Url.Action(nameof(OrderController.SendConfirmationCode))" method="post">
+    <input type="hidden" name="id" value="@Model.OrderId" />
+    <div class="form-group">
+        <label for="cellPhone">Мобильный телефон</label>
+        <input type="text" class="form-control" name="cellPhone" value="@Model.CellPhone" />
+    </div>
+    <button type="submit" class="btn btn-success">Repeat</button>
+</form>
+
+<form action="@Url.Action(nameof(OrderController.SendConfirmationCode))" method="post">
+    <input type="hidden" name="id" value="@Model.OrderId" />
+    <div class="form-group">
+        <label for="cellPhone">Мобильный телефон</label>
+        <input type="text" class="form-control" name="cellPhone" value="@Model.CellPhone" />
+    </div>
+    <button type="submit" class="btn btn-success">Repeat</button>
+</form>

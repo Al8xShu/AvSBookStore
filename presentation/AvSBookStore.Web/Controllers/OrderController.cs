@@ -1,8 +1,7 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using AvSBookStore.Web.Models;
-using System;
+using AvSBookStore.Messages;
 using Microsoft.AspNetCore.Http;
 
 namespace AvSBookStore.Web.Controllers
@@ -11,12 +10,15 @@ namespace AvSBookStore.Web.Controllers
     {
         private readonly IBookRepository bookRepository;
         private readonly IOrderRepository orderRepository;
+        private readonly INotificationService notificationService;
 
         public OrderController(IBookRepository bookRepository, 
-            IOrderRepository orderRepository)
+            IOrderRepository orderRepository,
+            INotificationService notificationService)
         {
             this.bookRepository = bookRepository;
             this.orderRepository = orderRepository;
+            this.notificationService = notificationService;
         }
 
         public IActionResult Index()
@@ -127,13 +129,15 @@ namespace AvSBookStore.Web.Controllers
 
             if (!IsValidCellPhone(cellPhone))
             {
+                model.Errors["cellPhone"] = "Number of mobile phone isn't correct!";
                 return View("Index", model);
             }
 
             int code = 1111;
             HttpContext.Session.SetInt32(cellPhone, code);
+            notificationService.SendConfirmationCode(cellPhone, code);
 
-            return RedirectToAction("Index", "Order", new { id = id });
+            return RedirectToAction("Confirmation", new ConfirmationModel { CellPhone = cellPhone });
         }
 
         private bool IsValidCellPhone(string cellPhone)
