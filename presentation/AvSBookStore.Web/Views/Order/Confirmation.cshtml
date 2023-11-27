@@ -10,7 +10,7 @@
     Enter <em>confirmation code</em> from SMS.
 </p>
 
-<form action="@Url.Action(nameof(OrderController.StartDelivery))" method="post">
+<form action="@Url.Action(nameof(OrderController.Confirmate))" method="post">
     <input type="hidden" name="id" value="@Model.OrderId" />
     <input type="hidden" name="cellPhone" value="@Model.CellPhone" />
     <div class="form-group">
@@ -21,7 +21,7 @@
         }
         <input type="text" class="form-control" name="code" placeholder="0000" />
     </div>
-    <button type="submit" class="btn btn-success">Repeat</button>
+    <button type="submit" class="btn btn-success">Check</button>
 </form>
 
 <form action="@Url.Action(nameof(OrderController.SendConfirmationCode))" method="post">
