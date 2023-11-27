@@ -2,7 +2,7 @@
 
 namespace AvSBookStore.Contractors
 {
-    public interface IDeliveryService   
+    public interface IPaymentService
     {
         string UniqCode { get; }
 
@@ -12,6 +12,6 @@ namespace AvSBookStore.Contractors
 
         Form MoveNext(int orderId, int step, IReadOnlyDictionary<string, string> values);
 
-        OrderDelivery GetDelivery(Form form);
+        OrderPayment GetPayment(Form form);
     }
 }

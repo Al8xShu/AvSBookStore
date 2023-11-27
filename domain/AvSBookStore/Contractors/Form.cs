@@ -36,7 +36,7 @@ namespace AvSBookStore.Contractors
             UniqCode = uniqCode;
             OrderId = orderId;
             Step = step;
-            IsFinal = IsFinal;
+            IsFinal = isFinal;
             Fields = fields.ToArray();
         }
     }

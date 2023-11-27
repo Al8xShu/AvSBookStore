@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using AvSBookStore.Memory;
 using AvSBookStore.Messages;
+using AvSBookStore.Contractors;
 
 namespace AvSBookStore.Web
 {
@@ -37,6 +38,8 @@ namespace AvSBookStore.Web
             services.AddSingleton<IOrderRepository, OrderRepository>();
 
             services.AddSingleton<INotificationService, DebugNotificationService>();
+
+            services.AddSingleton<IDeliveryService, PostamateDeliveryService>();
 
             services.AddSingleton<BookService>();
         }
