@@ -34,7 +34,7 @@ namespace AvSBookStore
         public int TotalCount => items.Sum(item => item.Count);
 
         public decimal TotalPrice => items.Sum(item => item.Price * item.Count)
-            + Delivery?.Amount ?? 0m;
+            + (Delivery?.Amount ?? 0m);
 
         public OrderItem GetItem(int bookId)
         {
