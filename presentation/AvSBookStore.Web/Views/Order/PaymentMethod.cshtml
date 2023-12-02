@@ -6,7 +6,7 @@
 
 <h1>Payment method</h1>
 
-<form action="@Url.Action(nameof(OrderController.NextDelivery))" method="post">
+<form action="@Url.Action(nameof(OrderController.StartPayment))" method="post">
     <input type="hidden" name="id" value="@Model.OrderId" />
     <div class="form-group">
         <label for="code">Payment method</label>

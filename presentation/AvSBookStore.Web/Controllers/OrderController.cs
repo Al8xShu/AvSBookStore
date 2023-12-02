@@ -256,5 +256,33 @@ namespace AvSBookStore.Web.Controllers
 
             return View("DeliveryStep", form);
         }
+
+        [HttpPost]
+        public IActionResult StartPayment(int id, string uniqCode)
+        {
+            var PaymentService = paymentServices.Single(service => service.UniqCode == uniqCode);
+            var order = orderRepository.GetById(id);
+            var form = PaymentService.CreateForm(order);
+
+            return View("PaymentStep", form);
+        }
+
+        [HttpPost]
+        public IActionResult NextPayment(int id, string uniqCode, int step, Dictionary<string, string> values)
+        {
+            var paymentService = paymentServices.Single(service => service.UniqCode == uniqCode);
+            var form = paymentService.MoveNext(id, step, values);
+
+            if (form.IsFinal)
+            {
+                var order = orderRepository.GetById(id);
+                order.Payment = paymentService.GetPayment(form);
+                orderRepository.Update(order);
+
+                return View("Finish");
+            }
+
+            return View("PaymentStep", form);
+        }
     }
 }
