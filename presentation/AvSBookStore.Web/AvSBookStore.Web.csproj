@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\domain\AvSBookStore\AvSBookStore.csproj" />
     <ProjectReference Include="..\..\infrastructure\AvSBookStore.Memory\AvSBookStore.Memory.csproj" />
+    <ProjectReference Include="..\..\plugins\AvSBookStore.YandexKassa\AvSBookStore.YandexKassa.csproj" />
   </ItemGroup>
 
 </Project>

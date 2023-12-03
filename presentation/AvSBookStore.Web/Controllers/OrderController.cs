@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using AvSBookStore.Contractors;
+using AvSBookStore.Web.Contractors;
 
 namespace AvSBookStore.Web.Controllers
 {
@@ -16,18 +17,21 @@ namespace AvSBookStore.Web.Controllers
         private readonly INotificationService notificationService;
         private readonly IEnumerable<IDeliveryService> deliveryServices;
         private readonly IEnumerable<IPaymentService> paymentServices;
+        private readonly IEnumerable<IWebContractorService> webContractorServices;
 
         public OrderController(IBookRepository bookRepository, 
             IOrderRepository orderRepository,
             INotificationService notificationService,
             IEnumerable<IDeliveryService> deliveryServices,
-            IEnumerable<IPaymentService> paymentServices)
+            IEnumerable<IPaymentService> paymentServices,
+            IEnumerable<IWebContractorService> webContractorServices)
         {
             this.bookRepository = bookRepository;
             this.orderRepository = orderRepository;
             this.notificationService = notificationService;
             this.deliveryServices = deliveryServices;
             this.paymentServices = paymentServices;
+            this.webContractorServices = webContractorServices;
         }
 
         [HttpGet]
@@ -263,6 +267,12 @@ namespace AvSBookStore.Web.Controllers
             var PaymentService = paymentServices.Single(service => service.UniqCode == uniqCode);
             var order = orderRepository.GetById(id);
             var form = PaymentService.CreateForm(order);
+            var webContractorService = webContractorServices.SingleOrDefault(service => service.UniqCode == uniqCode);
+
+            if (webContractorService != null)
+            {
+                return Redirect(webContractorService.GetUri);
+            }
 
             return View("PaymentStep", form);
         }
@@ -283,6 +293,11 @@ namespace AvSBookStore.Web.Controllers
             }
 
             return View("PaymentStep", form);
+        }
+
+        public IActionResult Finish()
+        {
+            return View();
         }
     }
 }

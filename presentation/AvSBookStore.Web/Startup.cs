@@ -7,6 +7,8 @@ using System;
 using AvSBookStore.Memory;
 using AvSBookStore.Messages;
 using AvSBookStore.Contractors;
+using AvSBookStore.YandexKassa;
+using AvSBookStore.Web.Contractors;
 
 namespace AvSBookStore.Web
 {
@@ -43,6 +45,10 @@ namespace AvSBookStore.Web
 
             services.AddSingleton<IPaymentService, CashPaymentService>();
 
+            services.AddSingleton<IPaymentService, YandexKassaPaymentService>();
+
+            services.AddSingleton<IWebContractorService, YandexKassaPaymentService>();
+
             services.AddSingleton<BookService>();
         }
 
@@ -75,6 +81,11 @@ namespace AvSBookStore.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapAreaControllerRoute(
+                    name: "yandex.kassa", 
+                    areaName: "YandexKassa",
+                    pattern: "YandexKassa/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
