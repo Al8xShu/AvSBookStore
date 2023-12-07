@@ -6,12 +6,17 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\application\AvSBookStore.Web.App\AvSBookStore.Web.App.csproj" />
     <ProjectReference Include="..\..\domain\AvSBookStore\AvSBookStore.csproj" />
+    <ProjectReference Include="..\..\infrastructure\AvSBookStore.Data.EF\AvSBookStore.Data.EF\AvSBookStore.Data.EF.csproj" />
     <ProjectReference Include="..\..\plugins\AvSBookStore.YandexKassa\AvSBookStore.YandexKassa.csproj" />
   </ItemGroup>
 

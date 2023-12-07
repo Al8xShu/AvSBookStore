@@ -11,7 +11,8 @@ namespace AvSBookStore
 
         public IReadOnlyDictionary<string, string> Parameters { get; }
 
-        public OrderPayment(string uniqCode, string description, 
+        public OrderPayment(string uniqCode,
+            string description, 
             IReadOnlyDictionary<string, string> parameters)
         {
             if (string.IsNullOrWhiteSpace(nameof(uniqCode)))

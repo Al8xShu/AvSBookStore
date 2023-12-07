@@ -9,6 +9,7 @@ using AvSBookStore.Contractors;
 using AvSBookStore.YandexKassa;
 using AvSBookStore.Web.Contractors;
 using AvSBookStore.Web.App;
+using AvSBookStore.Data.EF;
 
 namespace AvSBookStore.Web
 {
@@ -36,6 +37,8 @@ namespace AvSBookStore.Web
                     options.Cookie.HttpOnly = true;
                     options.Cookie.IsEssential = true;
                 });
+
+            services.AddEfRepositories(Configuration.GetConnectionString("AvSBookStore"));
 
             services.AddSingleton<INotificationService, DebugNotificationService>();
 

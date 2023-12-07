@@ -123,6 +123,8 @@ namespace AvSBookStore.Web.App
             {
                 order.Items.Add(book.Id, book.Price, count);
             }
+
+            orderRepository.Update(order);
         }
 
         private void UpdateSession(Order order)
