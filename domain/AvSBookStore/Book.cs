@@ -21,7 +21,7 @@ namespace AvSBookStore
             Price = price;
         }
 
-        internal static bool IsIsbn(string stroke)
+        public static bool IsIsbn(string stroke)
         {
             if (stroke == null)
             {

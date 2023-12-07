@@ -1,14 +1,15 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 using AvSBookStore.Memory;
 using AvSBookStore.Messages;
 using AvSBookStore.Contractors;
 using AvSBookStore.YandexKassa;
 using AvSBookStore.Web.Contractors;
+using AvSBookStore.Web.App;
 
 namespace AvSBookStore.Web
 {
@@ -27,6 +28,8 @@ namespace AvSBookStore.Web
             services.AddControllersWithViews();
 
             services.AddDistributedMemoryCache();
+
+            services.AddHttpContextAccessor();
 
             services.AddSession(options =>
                 {
@@ -50,6 +53,8 @@ namespace AvSBookStore.Web
             services.AddSingleton<IWebContractorService, YandexKassaPaymentService>();
 
             services.AddSingleton<BookService>();
+
+            services.AddSingleton<OrderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,13 +84,12 @@ namespace AvSBookStore.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                   name: "areas",
+                   pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-                endpoints.MapAreaControllerRoute(
-                    name: "yandex.kassa", 
-                    areaName: "YandexKassa",
-                    pattern: "YandexKassa/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

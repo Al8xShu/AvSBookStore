@@ -17,11 +17,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvSBookStore.Web", "present
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvSBookStore.Tests", "domain\AvSBookStore.Tests\AvSBookStore.Tests.csproj", "{2609A9DF-8068-42CC-A683-12F4E3C3E423}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvSBookStore.Web.Contractors", "presentation\AvSBookStore.Web.Contractors\AvSBookStore.Web.Contractors.csproj", "{3587D936-DCE9-4456-8C13-5F3D202E1571}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvSBookStore.Web.Contractors", "presentation\AvSBookStore.Web.Contractors\AvSBookStore.Web.Contractors.csproj", "{3587D936-DCE9-4456-8C13-5F3D202E1571}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{6DC19AD7-ECC4-453D-BF26-FB4D87DBFCB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvSBookStore.YandexKassa", "plugins\AvSBookStore.YandexKassa\AvSBookStore.YandexKassa.csproj", "{099CC41D-CCBC-4A91-9D42-D05569E91A00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvSBookStore.YandexKassa", "plugins\AvSBookStore.YandexKassa\AvSBookStore.YandexKassa.csproj", "{099CC41D-CCBC-4A91-9D42-D05569E91A00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "application", "application", "{E9BA842C-7986-4C2F-AF3E-37F1CEC9B86E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvSBookStore.Web.App", "application\AvSBookStore.Web.App\AvSBookStore.Web.App.csproj", "{2D2FA6EC-D668-4374-843F-06D9136B262B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +109,18 @@ Global
 		{099CC41D-CCBC-4A91-9D42-D05569E91A00}.Release|x64.Build.0 = Release|Any CPU
 		{099CC41D-CCBC-4A91-9D42-D05569E91A00}.Release|x86.ActiveCfg = Release|Any CPU
 		{099CC41D-CCBC-4A91-9D42-D05569E91A00}.Release|x86.Build.0 = Release|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Debug|x64.Build.0 = Debug|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Debug|x86.Build.0 = Debug|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Release|x64.ActiveCfg = Release|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Release|x64.Build.0 = Release|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Release|x86.ActiveCfg = Release|Any CPU
+		{2D2FA6EC-D668-4374-843F-06D9136B262B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +132,7 @@ Global
 		{2609A9DF-8068-42CC-A683-12F4E3C3E423} = {F623B750-D34F-463C-8DED-940C5663281F}
 		{3587D936-DCE9-4456-8C13-5F3D202E1571} = {1FBD4C45-CDC4-4143-AF3C-65228316E9CA}
 		{099CC41D-CCBC-4A91-9D42-D05569E91A00} = {6DC19AD7-ECC4-453D-BF26-FB4D87DBFCB6}
+		{2D2FA6EC-D668-4374-843F-06D9136B262B} = {E9BA842C-7986-4C2F-AF3E-37F1CEC9B86E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D12CC1F0-AB06-4CB8-AA9A-5DC6B818B12F}

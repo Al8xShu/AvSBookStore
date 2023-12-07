@@ -1,21 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AvSBookStore.Web.App;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AvSBookStore.Web.Controllers
 {
     public class BookController : Controller
     {
-        public readonly IBookRepository bookRepository;
+        private readonly BookService bookService;
 
-        public BookController(IBookRepository bookRepository)
+        public BookController(BookService bookService)
         {
-            this.bookRepository = bookRepository;
+            this.bookService = bookService;
         }
 
         public IActionResult Index(int id)
         {
-            Book book = bookRepository.GetById(id);
+            var model = bookService.GetById(id);
 
-            return View(book);
+            return View(model);
         }
     }
 }

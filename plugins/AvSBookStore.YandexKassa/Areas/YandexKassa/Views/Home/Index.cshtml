@@ -1,9 +1,20 @@
-﻿@{
+﻿@using AvSBookStore.YandexKassa.Areas.YandexKassa.Controllers
+@using AvSBookStore.YandexKassa.Areas.YandexKassa.Models
+
+@model ExampleModel
+
+@{
     ViewData["Title"] = "Yandex Kassa";
 }
 
 <h1>Yandex Kassa</h1>
 
 <p>
-    <a href="/YandexKassa/Home/CallBack">Pay</a>
+    This is an emulation of Yandex service. We can see how to send parameters in source code.
 </p>
+
+<form action="@Url.Action(nameof(HomeController.CallBack), "Home", new { area = "YandexKassa" })" method="post">
+    <input type="hidden" name="orderId" value="@Model.OrderId" />
+    <input type="hidden" name="returnUri" value="@Model.ReturnUri" />
+    <button type="submit" class="btn btn-success">Оплатить</button>
+</form>

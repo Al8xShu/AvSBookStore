@@ -1,4 +1,4 @@
-﻿@model ConfirmationModel
+﻿@model OrderModel
 
 @{           
     ViewData["Title"] = "Mobile phone confirmation";
@@ -10,25 +10,27 @@
     Enter <em>confirmation code</em> from SMS.
 </p>
 
-<form action="@Url.Action(nameof(OrderController.Confirmate))" method="post">
-    <input type="hidden" name="id" value="@Model.OrderId" />
+<form action="@Url.Action(nameof(OrderController.ConfirmCellPhone))" method="post">
     <input type="hidden" name="cellPhone" value="@Model.CellPhone" />
     <div class="form-group">
-        <label for="code">Confirmation code</label>
-        @if (Model.Errors.ContainsKey("code"))
+        <label for="confirmationCode">Confirmation code</label>
+        <input type="text" class="form-control" name="confirmationCode" placeholder="0000" />
+        @if (Model.Errors.ContainsKey("confirmationCode"))
         {
-            <small class="form-text text-danger">@Model.Errors["code"]</small>
+            <small class="form-text text-danger">@Model.Errors["confirmationCode"]</small>
         }
-        <input type="text" class="form-control" name="code" placeholder="0000" />
     </div>
     <button type="submit" class="btn btn-success">Check</button>
 </form>
 
-<form action="@Url.Action(nameof(OrderController.SendConfirmationCode))" method="post">
-    <input type="hidden" name="id" value="@Model.OrderId" />
+<form action="@Url.Action(nameof(OrderController.SendConfirmation))" method="post">
     <div class="form-group">
-        <label for="cellPhone">Мобильный телефон</label>
+        <label for="cellPhone">Mobile phone</label>
         <input type="text" class="form-control" name="cellPhone" value="@Model.CellPhone" />
+        @if (Model.Errors.ContainsKey("cellPhone"))
+        {
+            <small class="form-text text-danger">@Model.Errors["cellPhone"]</small>
+        }
     </div>
-    <button type="submit" class="btn btn-success">Repeat</button>
+    <button type="submit" class="btn btn-success">Resend</button>
 </form>
