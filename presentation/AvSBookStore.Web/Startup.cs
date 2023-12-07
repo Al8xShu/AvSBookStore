@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using AvSBookStore.Memory;
 using AvSBookStore.Messages;
 using AvSBookStore.Contractors;
 using AvSBookStore.YandexKassa;
@@ -37,10 +36,6 @@ namespace AvSBookStore.Web
                     options.Cookie.HttpOnly = true;
                     options.Cookie.IsEssential = true;
                 });
-
-            services.AddSingleton<IBookRepository, BookRepository>();
-
-            services.AddSingleton<IOrderRepository, OrderRepository>();
 
             services.AddSingleton<INotificationService, DebugNotificationService>();
 

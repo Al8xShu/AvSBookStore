@@ -9,7 +9,7 @@ namespace AvSBookStore
 
         public string Description { get; }
 
-        public decimal Amount { get; }
+        public decimal Price { get; }
 
         public IReadOnlyDictionary<string, string> Parameters { get; }
 
@@ -33,7 +33,7 @@ namespace AvSBookStore
 
             UniqCode = uniqCode;
             Description = description;
-            Amount = amount;
+            Price = amount;
             Parameters = parameters;
         }
     }
