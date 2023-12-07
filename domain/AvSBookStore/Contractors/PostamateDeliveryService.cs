@@ -34,57 +34,37 @@ namespace AvSBookStore.Contractors
             }
         };
 
-        public string UniqCode => "Postamate";
+        public string Name => "Postamate";
 
         public string Title => "Delivery from postamate in Moscow & Saint-Pitersburg";
 
-        public Form CreateForm(Order order)
+        public Form FirstForm(Order order)
         {
-            if (order == null)
-            {
-                throw new ArgumentNullException(nameof(order));
-            }
-
-            return new Form(UniqCode, order.Id, 1, false,
-            new[]
-            {
-                 new SelectionField("City", "city", "1", cities),
-            });
+            return Form.CreateFirst(Name)
+                       .AddParameter("orderId", order.Id.ToString())
+                       .AddField(new SelectionField("City", "city", "1", cities));
         }
 
-        public Form MoveNext(int orderId, int step, IReadOnlyDictionary<string, string> values)
+        public Form NextForm(int step, IReadOnlyDictionary<string, string> values)
         {
             if (step == 1)
             {
                 if (values["city"] == "1")
                 {
-                    return new Form(UniqCode, orderId, 2, false,
-                        new Field[]
-                        {
-                            new HiddenField("City", "city", "1"),
-                            new SelectionField("Postamate", "postamate", "1", postamates["1"])
-                        });
+                    return Form.CreateNext(Name, 2, values)
+                               .AddField(new SelectionField("Postamate", "postamate", "1", postamates["1"]));
                 }
                 else if (values["city"] == "2")
                 {
-                    return new Form(UniqCode, orderId, 2, false,
-                        new Field[]
-                        {
-                            new HiddenField("City", "city", "2"),
-                            new SelectionField("Postamate", "postamate", "4", postamates["2"])
-                        });
+                    return Form.CreateNext(Name, 2, values)
+                               .AddField(new SelectionField("Postamate", "postamate", "4", postamates["2"]));
                 }
                 else
                     throw new InvalidOperationException("Invalid postamate city.");
             }
             else if (step == 2)
             {
-                return new Form(UniqCode, orderId, 3, true,
-                       new Field[]
-                       {
-                            new HiddenField("City", "city", values["city"]),
-                            new HiddenField("Postamate", "postamate", values["postamate"])
-                       });
+                return Form.CreateLast(Name, 3, values);
             }
             else
                 throw new InvalidOperationException("Invalid postamate step.");
@@ -92,28 +72,25 @@ namespace AvSBookStore.Contractors
 
         public OrderDelivery GetDelivery(Form form)
         {
-            if (form.UniqCode != UniqCode || !form.IsFinal)
-            {
-                throw new InvalidOperationException("Invalid form!");
-            }
+            if (form.ServiceName != Name || !form.IsFinal)
+                throw new InvalidOperationException("Invalid form.");
 
-            var cityId = form.Fields.Single(field => field.Name == "city").Value;
+            var cityId = form.Parameters["city"];
             var cityName = cities[cityId];
-
-            var postamateId = form.Fields.Single(field => field.Name == "postamate").Value;
+            var postamateId = form.Parameters["postamate"];
             var postamateName = postamates[cityId][postamateId];
 
-            var parameters = new Dictionary<string, string>()
+            var parameters = new Dictionary<string, string>
             {
-                {nameof(cityId), cityId},
-                {nameof(cityName), cityName},
-                {nameof(postamateId), postamateId},
-                {nameof(postamateName), postamateName}
+                { nameof(cityId), cityId },
+                { nameof(cityName), cityName },
+                { nameof(postamateId), postamateId },
+                { nameof(postamateName), postamateName },
             };
 
             var description = $"City: {cityName}\nPostamate: {postamateName}";
 
-            return new OrderDelivery(UniqCode, description, 150m, parameters);
+            return new OrderDelivery(Name, description, 150m, parameters);
         }
     }
 }

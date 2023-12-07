@@ -11,19 +11,11 @@ namespace AvSBookStore
 
         public Order(int id, IEnumerable<OrderItem> items)
         {
-            if (items == null)
-            {
-                throw new ArgumentNullException(nameof(items));
-            }
-
             Id = id;
-            this.items = new List<OrderItem>(items);
+            Items = new OrderItemCollection(items);
         }
 
-        public IReadOnlyCollection<OrderItem> Items
-        {
-            get { return items; }
-        }
+        public OrderItemCollection Items { get; }
 
         public string CellPhone { get; set; }
 
@@ -31,9 +23,9 @@ namespace AvSBookStore
 
         public OrderPayment Payment { get; set; }
 
-        public int TotalCount => items.Sum(item => item.Count);
+        public int TotalCount => Items.Sum(item => item.Count);
 
-        public decimal TotalPrice => items.Sum(item => item.Price * item.Count)
+        public decimal TotalPrice => Items.Sum(item => item.Price * item.Count)
             + (Delivery?.Amount ?? 0m);
 
         public OrderItem GetItem(int bookId)

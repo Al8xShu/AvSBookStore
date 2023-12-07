@@ -1,9 +1,19 @@
-﻿@{
+﻿@using AvSBookStore.YandexKassa.Areas.YandexKassa.Models
+@model ExampleModel
+
+@{
     ViewData["Title"] = "Order has been paid";
 }
 
 <h1>Order has been paid</h1>
 
 <p>
-    <a href="@Url.Action("Finish", "Order")">Return in store</a>
+    To complete your order, please push next button.
 </p>
+
+<form action="@Model.ReturnUri" method="post">
+    <input type="hidden" name="serviceName" value="YandexKassa" />
+    <input type="hidden" name="step" value="1" />
+    <input type="hidden" name="vaues[orderId]" value="@Model.OrderId" />
+    <button type="submit" class="btn btn-success">Next</button>
+</form>

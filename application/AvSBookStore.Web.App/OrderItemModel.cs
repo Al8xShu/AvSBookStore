@@ -1,5 +1,4 @@
-﻿
-namespace AvSBookStore.Web.Models
+﻿namespace AvSBookStore.Web.App
 {
     public class OrderItemModel
     {

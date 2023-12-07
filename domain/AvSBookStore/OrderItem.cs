@@ -22,6 +22,7 @@ namespace AvSBookStore
         public OrderItem(int bookId, int count, decimal price)
         {
             ThrowIfInvalidCount(count);
+
             BookId = bookId;
             Count = count;
             Price = price;

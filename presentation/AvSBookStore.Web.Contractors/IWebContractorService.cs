@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AvSBookStore.Web.Contractors
 {
     public interface IWebContractorService
     {
-        string UniqCode { get; }
+        string Name { get; }
 
-        string GetUri { get; }
+        Uri StartSession(IReadOnlyDictionary<string, string> paramenters, Uri returnUri);
     }
 }

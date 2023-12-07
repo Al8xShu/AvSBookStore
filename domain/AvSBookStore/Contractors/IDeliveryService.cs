@@ -4,13 +4,13 @@ namespace AvSBookStore.Contractors
 {
     public interface IDeliveryService   
     {
-        string UniqCode { get; }
+        string Name { get; }
 
         string Title { get; }
 
-        Form CreateForm(Order order);
+        Form FirstForm(Order order);
 
-        Form MoveNext(int orderId, int step, IReadOnlyDictionary<string, string> values);
+        Form NextForm(int step, IReadOnlyDictionary<string, string> values);
 
         OrderDelivery GetDelivery(Form form);
     }

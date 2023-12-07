@@ -5,33 +5,33 @@ namespace AvSBookStore.Contractors
 {
     public class CashPaymentService : IPaymentService
     {
-        public string UniqCode => "Cash";
+        public string Name => "Cash";
 
         public string Title => "Cash payment";
 
-        public Form CreateForm(Order order)
+        public Form FirstForm(Order order)
         {
-            return new Form(UniqCode, order.Id, 1, false, new Field[0]);
+            return Form.CreateFirst(Name).AddParameter("orderId", order.Id.ToString());
+        }
+
+        public Form NextForm(int step, IReadOnlyDictionary<string, string> values)
+        {
+            if (step != 1)
+            {
+                throw new InvalidOperationException("Invalid cash payment step.");
+            }
+
+            return Form.CreateLast(Name, step + 1, values);
         }
 
         public OrderPayment GetPayment(Form form)
         {
-            if (form.UniqCode != UniqCode || !form.IsFinal)
+            if (form.ServiceName != Name || !form.IsFinal)
             {
-                throw new InvalidOperationException("Inavlid payment form.");
+                throw new InvalidOperationException("Invalid payment form.");
             }
 
-            return new OrderPayment(UniqCode, "Cash payment", new Dictionary<string, string>());
-        }
-
-        public Form MoveNext(int orderId, int step, IReadOnlyDictionary<string, string> values)
-        {
-            if (step != 1)
-            {
-                throw new InvalidOperationException("Invalid cash step.");
-            }
-
-            return new Form(UniqCode, orderId, 1, true, new Field[0]);
+            return new OrderPayment(Name, "Cash payment", form.Parameters);
         }
     }
 }
