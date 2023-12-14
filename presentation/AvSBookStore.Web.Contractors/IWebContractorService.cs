@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AvSBookStore.Web.Contractors
 {
@@ -8,5 +9,7 @@ namespace AvSBookStore.Web.Contractors
         string Name { get; }
 
         Uri StartSession(IReadOnlyDictionary<string, string> paramenters, Uri returnUri);
+
+        Task<Uri> StartSessionAsync(IReadOnlyDictionary<string, string> paramenters, Uri returnUri);
     }
 }

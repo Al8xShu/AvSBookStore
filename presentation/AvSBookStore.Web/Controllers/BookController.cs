@@ -1,5 +1,6 @@
 ﻿using AvSBookStore.Web.App;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace AvSBookStore.Web.Controllers
 {
@@ -12,9 +13,9 @@ namespace AvSBookStore.Web.Controllers
             this.bookService = bookService;
         }
 
-        public IActionResult Index(int id)
+        public async Task<IActionResult> Index(int id)
         {
-            var model = bookService.GetById(id);
+            var model = await bookService.GetByIdAsync(id);
 
             return View(model);
         }

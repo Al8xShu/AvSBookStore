@@ -1,6 +1,7 @@
 ﻿using AvSBookStore.Web.App;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AvSBookStore.Web.App
 {
@@ -20,11 +21,27 @@ namespace AvSBookStore.Web.App
             return Map(book);
         }
 
+        public async Task<BookModel> GetByIdAsync(int id)
+        {
+            var book = await bookRepository.GetByIdAsync(id);
+
+            return Map(book);
+        }
+
         public IReadOnlyCollection<BookModel> GetAllByQuery(string query)
         {
             var books = Book.IsIsbn(query)
                 ? bookRepository.getAllByIsbn(query)
                 : bookRepository.getAllByTitleOrAuthor(query);
+
+            return books.Select(Map).ToArray();
+        }
+
+        public async Task<IReadOnlyCollection<BookModel>> GetAllByQueryAsync(string query)
+        {
+            var books = Book.IsIsbn(query)
+                ? await bookRepository.getAllByIsbnAsync(query)
+                : await bookRepository.getAllByTitleOrAuthorAsync(query);
 
             return books.Select(Map).ToArray();
         }
