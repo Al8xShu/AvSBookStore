@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvSBookStore.Data.EF.Migrations
 {
     [DbContext(typeof(AvSBookStoreDbContext))]
-    [Migration("20231207191302_FullTextSearch")]
+    [Migration("20231208100643_FullTextSearch")]
     partial class FullTextSearch
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
