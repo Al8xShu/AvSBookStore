@@ -246,6 +246,8 @@ namespace AvSBookStore.Web.App
             orderRepository.Update(order);
             Session.RemoveCart();
 
+            notificationService.StartProcess(order);
+
             return Map(order);
         }
     }

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AvSBookStore.Data.EF
@@ -13,6 +15,8 @@ namespace AvSBookStore.Data.EF
                     },
                     ServiceLifetime.Transient);
 
+            services.AddScoped<Dictionary<Type, AvSBookStoreDbContext>>();
+            services.AddSingleton<DbContextFactory>();
             services.AddSingleton<IBookRepository, BookRepository>();
             services.AddSingleton<IOrderRepository, OrderRepository>();
 

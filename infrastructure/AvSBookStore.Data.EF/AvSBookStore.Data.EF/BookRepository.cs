@@ -1,28 +1,62 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AvSBookStore.Data.EF
 {
     public class BookRepository : IBookRepository
     {
+        private readonly DbContextFactory dbContextFactory;
+
+        public BookRepository(DbContextFactory dbContextFactory)
+        {
+            this.dbContextFactory = dbContextFactory;
+        }
+
         public Book[] GetAllByIds(IEnumerable<int> bookIds)
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+
+            return dbContext.Books
+                .Where(book => bookIds.Contains(book.Id)).AsEnumerable()
+                .Select(Book.Mapper.Map).ToArray();
         }
 
         public Book[] getAllByIsbn(string isbn)
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+            
+            if (Book.TryFormatIsbn(isbn, out string formatedIsbn))
+            {
+                return dbContext.Books
+                    .Where(book => book.Isbn == formatedIsbn).AsEnumerable()
+                    .Select(Book.Mapper.Map).ToArray();
+            }
+
+            return new Book[0];
         }
 
         public Book[] getAllByTitleOrAuthor(string titleOrAuthor)
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+
+            var parameter = new SqlParameter("@titleOrAuthor", titleOrAuthor);
+
+            var dtos = dbContext.Books
+                .FromSqlRaw("SELECT * FROM Books WHERE CONTAINS((Author, Title), @titleOrAuthor)", parameter).ToArray();
+
+            return dtos.Select(Book.Mapper.Map).ToArray();
         }
 
         public Book GetById(int id)
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+
+            var dto = dbContext.Books.Single(book => book.Id == id);
+
+            return Book.Mapper.Map(dto);
         }
     }
 }
