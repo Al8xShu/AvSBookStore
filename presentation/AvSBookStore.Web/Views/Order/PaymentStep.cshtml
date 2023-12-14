@@ -7,7 +7,7 @@
 <h1>Payment options</h1>
 
 <form action="@Url.Action(nameof(OrderController.NextPayment))" method="post">
-    <input type="hidden" name="uniqCode" value="@Model.ServiceName" />
+    <input type="hidden" name="ServiceName" value="@Model.ServiceName" />
     <input type="hidden" name="step" value="@Model.Step" />
     @foreach (var parameter in Model.Parameters)
     {

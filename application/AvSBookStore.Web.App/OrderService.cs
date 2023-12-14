@@ -4,19 +4,16 @@ using System.Linq;
 using System.Collections.Generic;
 using System;
 using PhoneNumbers;
+using System.Threading.Tasks;
 
 namespace AvSBookStore.Web.App
 {
     public class OrderService
     {
         private readonly IBookRepository bookRepository;
-
         private readonly IOrderRepository orderRepository;
-
         private readonly INotificationService notificationService;
-
         private readonly IHttpContextAccessor httpContextAccessor;
-
         private readonly PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.GetInstance();
 
         protected ISession Session => httpContextAccessor.HttpContext.Session;
@@ -47,6 +44,18 @@ namespace AvSBookStore.Web.App
             return false;
         }
 
+        public async Task<(bool hasValue, OrderModel model)> TryGetModelAsync()
+        {
+            var(hasValue, order) = await TryGetOrderAsync();
+
+            if (hasValue)
+            {
+                return (true, Map(order));
+            }
+
+            return (false, null);
+        }
+
         internal bool TryGetOrder(out Order order)
         {
             if (Session.TryGetCart(out Cart cart))
@@ -58,6 +67,17 @@ namespace AvSBookStore.Web.App
             order = null;
 
             return false;
+        }
+
+        internal async Task<(bool hasValue, Order order)> TryGetOrderAsync()
+        {
+            if (Session.TryGetCart(out Cart cart))
+            {
+                var order = await orderRepository.GetByIdAsync(cart.OrderId);
+                return (true, order);
+            }
+
+            return (false, null);
         }
 
         private OrderModel Map(Order order)
@@ -93,19 +113,39 @@ namespace AvSBookStore.Web.App
             return bookRepository.GetAllByIds(bookIds);
         }
 
-        public OrderModel AppBook(int bookId, int count)
+        //public OrderModel AppBook(int bookId, int count)
+        //{
+        //    if (count < 1)
+        //    {
+        //        throw new InvalidOperationException("Too few books to add!");
+        //    }
+
+        //    if (!TryGetOrder(out Order order))
+        //    {
+        //        order = orderRepository.Create();
+        //    }
+
+        //    AddOrUpdateBook(order, bookId, count);
+        //    UpdateSession(order);
+
+        //    return Map(order);
+        //}
+
+        public async Task<OrderModel> AppBookAsync(int bookId, int count)
         {
             if (count < 1)
             {
                 throw new InvalidOperationException("Too few books to add!");
             }
 
-            if (!TryGetOrder(out Order order))
+            var (hasValue, order) = await TryGetOrderAsync();
+
+            if (!hasValue)
             {
-                order = orderRepository.Create();
+                order = await orderRepository.CreateAsync();
             }
 
-            AddOrUpdateBook(order, bookId, count);
+            await AddOrUpdateBookAsync(order, bookId, count);
             UpdateSession(order);
 
             return Map(order);
@@ -127,6 +167,22 @@ namespace AvSBookStore.Web.App
             orderRepository.Update(order);
         }
 
+        internal async Task AddOrUpdateBookAsync(Order order, int bookId, int count)
+        {
+            var book = await bookRepository.GetByIdAsync(bookId);
+
+            if (order.Items.TryGet(bookId, out OrderItem orderItem))
+            {
+                orderItem.Count += count;
+            }
+            else
+            {
+                order.Items.Add(book.Id, book.Price, count);
+            }
+
+            await orderRepository.UpdateAsync(order);
+        }
+
         private void UpdateSession(Order order)
         {
             var cart = new Cart(order.Id, order.TotalCount, order.TotalPrice);
@@ -144,6 +200,17 @@ namespace AvSBookStore.Web.App
             return Map(order);
         }
 
+        public async Task<OrderModel> UpdateBookAsync(int bookId, int count)
+        {
+            var order = await GetOrderAsync();
+            order.Items.Get(bookId).Count = count;
+
+            await orderRepository.UpdateAsync(order);
+            UpdateSession(order);
+
+            return Map(order);
+        }
+
         public OrderModel RemoveBook(int bookId)
         {
             var order = GetOrder();
@@ -155,9 +222,32 @@ namespace AvSBookStore.Web.App
             return Map(order);
         }
 
+        public async Task<OrderModel> RemoveBookAsync(int bookId)
+        {
+            var order = await GetOrderAsync();
+            order.Items.Remove(bookId);
+
+            await orderRepository.UpdateAsync(order);
+            UpdateSession(order);
+
+            return Map(order);
+        }
+
         public Order GetOrder()
         {
             if (TryGetOrder(out Order order))
+            {
+                return order;
+            }
+
+            throw new InvalidOperationException("Empty session!");
+        }
+
+        public async Task<Order> GetOrderAsync()
+        {
+            var (hasValue, order) = await TryGetOrderAsync();
+
+            if (hasValue)
             {
                 return order;
             }
@@ -178,6 +268,28 @@ namespace AvSBookStore.Web.App
                 Session.SetInt32(formattedPhone, confirmationCode);
 
                 notificationService.SendConfirmationCode(formattedPhone, confirmationCode);
+            }
+            else
+            {
+                model.Errors["CellPhone"] = "The number of phone isn't correct!";
+            }
+
+            return model;
+        }
+
+        public async Task<OrderModel> SendConfirmationAsync(string cellPhone)
+        {
+            var order = await GetOrderAsync();
+            var model = Map(order);
+
+            if (TryFormatPhone(cellPhone, out string formattedPhone))
+            {
+                var confirmationCode = 1111;
+
+                model.CellPhone = formattedPhone;
+                Session.SetInt32(formattedPhone, confirmationCode);
+
+                await notificationService.SendConfirmationCodeAsync(formattedPhone, confirmationCode);
             }
             else
             {
@@ -230,11 +342,46 @@ namespace AvSBookStore.Web.App
             return Map(order);
         }
 
+        public async Task<OrderModel> ConfirmCellPhoneAsync(string cellPhone, int confirmationCode)
+        {
+            int? storedCode = Session.GetInt32(cellPhone);
+            var model = new OrderModel();
+
+            if (storedCode == null)
+            {
+                model.Errors["cellPhone"] = "Something went wrong. Try again to get the code!";
+                return model;
+            }
+
+            if (storedCode != confirmationCode)
+            {
+                model.Errors["cellPhone"] = "Code is incorrect. Chek and try again!";
+                return model;
+            }
+
+            var order = await GetOrderAsync();
+            order.CellPhone = cellPhone;
+            await orderRepository.UpdateAsync(order);
+
+            Session.Remove(cellPhone);
+
+            return Map(order);
+        }
+
         public OrderModel SetDelivery(OrderDelivery delivery)
         {
             var order = GetOrder();
             order.Delivery = delivery;
             orderRepository.Update(order);
+
+            return Map(order);
+        }
+
+        public async Task<OrderModel> SetDeliveryAsync(OrderDelivery delivery)
+        {
+            var order = await GetOrderAsync();
+            order.Delivery = delivery;
+            await orderRepository.UpdateAsync(order);
 
             return Map(order);
         }
@@ -247,6 +394,18 @@ namespace AvSBookStore.Web.App
             Session.RemoveCart();
 
             notificationService.StartProcess(order);
+
+            return Map(order);
+        }
+
+        public async Task<OrderModel> SetPaymentAsync(OrderPayment payment)
+        {
+            var order = await GetOrderAsync();
+            order.Payment = payment;
+            await orderRepository.UpdateAsync(order);
+            Session.RemoveCart();
+
+            await  notificationService.StartProcessAsync(order);
 
             return Map(order);
         }
