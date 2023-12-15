@@ -16,27 +16,13 @@ namespace AvSBookStore.Data.EF
             this.dbContextFactory = dbContextFactory;
         }
 
-        public Book[] GetAllByIds(IEnumerable<int> bookIds)
+        public async Task<Book[]> GetAllByIdsAsync(IEnumerable<int> bookIds)
         {
             var dbContext = dbContextFactory.Create(typeof(BookRepository));
 
-            return dbContext.Books
-                .Where(book => bookIds.Contains(book.Id)).AsEnumerable()
-                .Select(Book.Mapper.Map).ToArray();
-        }
+            var dtos = await dbContext.Books.Where(book => bookIds.Contains(book.Id)).ToArrayAsync();
 
-        public Book[] getAllByIsbn(string isbn)
-        {
-            var dbContext = dbContextFactory.Create(typeof(BookRepository));
-            
-            if (Book.TryFormatIsbn(isbn, out string formatedIsbn))
-            {
-                return dbContext.Books
-                    .Where(book => book.Isbn == formatedIsbn).AsEnumerable()
-                    .Select(Book.Mapper.Map).ToArray();
-            }
-
-            return new Book[0];
+            return dtos.Select(Book.Mapper.Map).ToArray();
         }
 
         public async Task<Book[]> getAllByIsbnAsync(string isbn)
