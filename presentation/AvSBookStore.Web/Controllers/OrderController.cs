@@ -82,7 +82,7 @@ namespace AvSBookStore.Web.Controllers
 
         public async Task<IActionResult> ConfirmCellPhone(string cellPhone, int confirmationCode)
         {
-            var model = await orderService.ConfirmCellPhoneAsync(cellPhone, confirmationCode);
+            var model = await orderService.ConfirmCellPhone(cellPhone, confirmationCode);
 
             if (model.Errors.Count > 0)
                 return View("Confirmation", model);

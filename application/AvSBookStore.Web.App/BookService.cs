@@ -14,9 +14,9 @@ namespace AvSBookStore.Web.App
             this.bookRepository = bookRepository;
         }
 
-        public BookModel GetById(int id)
+        public async Task<BookModel> GetById(int id)
         {
-            var book = bookRepository.GetById(id);
+            var book = await bookRepository.GetByIdAsync(id);
 
             return Map(book);
         }
@@ -28,11 +28,11 @@ namespace AvSBookStore.Web.App
             return Map(book);
         }
 
-        public IReadOnlyCollection<BookModel> GetAllByQuery(string query)
+        public async Task<IReadOnlyCollection<BookModel>> GetAllByQuery(string query)
         {
             var books = Book.IsIsbn(query)
-                ? bookRepository.getAllByIsbn(query)
-                : bookRepository.getAllByTitleOrAuthor(query);
+                ? await bookRepository.getAllByIsbnAsync(query)
+                : await bookRepository.getAllByTitleOrAuthorAsync(query);
 
             return books.Select(Map).ToArray();
         }
